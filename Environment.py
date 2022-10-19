@@ -66,17 +66,15 @@ class DoublePendulumEnv(gym.Env):
         normalized_angle_1 = np.degrees(normalize_angle(state[1]))
         normalized_angle_2 = np.degrees(normalize_angle(state[2]))
 
-        # if normalized_angle_1 > 80 and normalized_angle_1 < 100:
-        #     reward = 1 - (90 - normalized_angle_1) * 0.01
-        #     if normalized_angle_2 > 80 and normalized_angle_2 < 100:
-        #         reward += reward + 1 - (90 - normalized_angle_2) * 0.01
-        #         reward *= 0.5
-        # #             if np.abs(np.degrees(state[2])) < 100:
-        # #                 reward = reward + 9 - (90 - np.degrees(state[2]))*0.1
-        # #                 reward *= 1
-        # else:
-        #     reward = -1
-        #     done = True
+        if normalized_angle_1 > 85 and normalized_angle_1 < 95:
+            reward = 1 - (90 - normalized_angle_1) * 0.01
+            if normalized_angle_2 > 80 and normalized_angle_2 < 100:
+                reward += reward + 1 - (90 - normalized_angle_2) * 0.01
+                reward *= 0.5
+
+        else:
+            reward = -1
+            done = True
 
        # another degree reward system
         cost = 2*(normalize_angle(state[1]) - np.pi/2) + \
@@ -146,7 +144,7 @@ class DoublePendulumEnv(gym.Env):
         """
         self.rew_sum = 0
         self.state = self.init_state
-
+        d = np.random.uniform(-self.max_initial_angle, self.max_initial_angle)
         self.state[1] = np.pi/2 + np.random.uniform(-self.max_initial_angle, self.max_initial_angle)
         self.state[2] = np.pi/2 + np.random.uniform(-self.max_initial_angle, self.max_initial_angle)
 
