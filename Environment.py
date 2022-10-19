@@ -23,7 +23,7 @@ def normalize_angle(angle):
 class DoublePendulumEnv(gym.Env):
 
     def __init__(self, init_state, dt=0.02, max_initial_angle = 3 * 2 * np.pi / 360):
-        self.action_space = Box(low=-10, high=10)
+        self.action_space = Box(low=-2, high=2)
         self.observation_space = 6
         self.state = init_state
         self.init_state = init_state
