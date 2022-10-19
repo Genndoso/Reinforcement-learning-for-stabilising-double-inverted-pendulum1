@@ -70,11 +70,10 @@ class DoublePendulumEnv(gym.Env):
             reward = 1 - (90 - normalized_angle_1) * 0.01
             if normalized_angle_2 > 80 and normalized_angle_2 < 100:
                 reward += reward + 1 - (90 - normalized_angle_2) * 0.01
-                reward *= 0.5
 
-        else:
-            reward = -1
-            done = True
+        # else:
+        #     reward = -1
+        #     done = True
 
        # another degree reward system
         cost = 2*(normalize_angle(state[1]) - np.pi/2) + \
