@@ -36,7 +36,7 @@ class RolloutBuffer:
 
 
 class ActorCritic(nn.Module):
-    def __init__(self, state_dim, action_dim, action_std_init, hidden_size=528):
+    def __init__(self, state_dim, action_dim, action_std_init, hidden_size=64):
         super(ActorCritic, self).__init__()
 
         self.action_dim = action_dim
@@ -47,31 +47,26 @@ class ActorCritic(nn.Module):
         self.hidden_size = hidden_size
         self.actor = nn.Sequential(
             nn.Linear(state_dim, self.hidden_size),
-            nn.Tanh(),
+            nn.LeakyReLU(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.Tanh(),
+            nn.LeakyReLU(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.Tanh(),
-            nn.Dropout(),
+            nn.LeakyReLU(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.Tanh(),
-            nn.Dropout(),
+            nn.LeakyReLU(),
             nn.Linear(self.hidden_size, action_dim),
             nn.Tanh()
         )
         # Critic NN
         self.critic = nn.Sequential(
             nn.Linear(state_dim, self.hidden_size),
-            nn.Tanh(),
+            nn.LeakyReLU(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.Tanh(),
-            nn.Dropout(),
+            nn.LeakyReLU(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.Tanh(),
-            nn.Dropout(),
+            nn.LeakyReLU(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.Tanh(),
-            nn.Dropout(),
+            nn.LeakyReLU(),
             nn.Linear(self.hidden_size, 1)
         )
 
@@ -262,7 +257,7 @@ class PPO:
         self.policy.load_state_dict(torch.load(checkpoint_path, map_location=lambda storage, loc: storage))
 
 
-def unscaled_action(scaled_action, action_low=-10, action_high=10):
+def unscaled_action(scaled_action, action_low=-500, action_high=500):
     """
     A tanh() activation function is applied before getting output from actor network. Therefore, the mean is bounded
     to (-1, 1). The action space for the control problem is (-10, +10). An unscaling of action is needed to explore
