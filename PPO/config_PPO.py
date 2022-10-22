@@ -11,5 +11,6 @@ config = {'max_episode_length': 200,
           'dt': 0.02,
           'lr_actor': 3e-4,
           'lr_critic': 1e-3,
-          'save_model_freq': 1e5
-          }
+          'save_model_freq': 1e5,
+          'action_low': -100,
+          'action_high': 100}

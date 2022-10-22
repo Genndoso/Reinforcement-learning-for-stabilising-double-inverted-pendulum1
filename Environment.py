@@ -6,7 +6,15 @@ from matplotlib import animation
 import matplotlib.pyplot as plt
 # normalized angle
 
+class ObservationSpaceCartPole():
+    def __init__(self):
+        self.shape = (6,)
 
+
+class ActionSpaceCartPole():
+    def __init__(self):
+        self.shape = (1,)
+        self.bounds = (-2, 2)
 
 
 class DoublePendulumEnv(gym.Env):
@@ -20,6 +28,8 @@ class DoublePendulumEnv(gym.Env):
         print('Environment initialized')
         self.init_coords = state_to_coords(init_state)
         self.max_initial_angle = max_initial_angle
+        self.state_history = [self.init_state]
+        self.action_history = []
 
     def _take_action(self, action):
         self.state = get_next_state(self.state, action, self.dt)
@@ -98,6 +108,27 @@ class DoublePendulumEnv(gym.Env):
 
         return reward, done
 
+    def reward_function3(self):
+        goal = np.array([-1, 0])
+        coords = np.array(state_to_coords(self.state)[:, 0])
+        reward = max(np.linalg.norm(coords - goal), 0.0001)
+        reward = 1 / reward
+
+        done = False
+
+        return reward, done
+
+    def reward_function2(self):
+        final_node_coords = np.array(state_to_coords(self.state)[:, -1])
+        goal_coords = np.array(state_to_coords([0, np.pi / 2, np.pi / 2])[:, -1])
+
+        reward = max(np.linalg.norm(final_node_coords - goal_coords), 0.0001)
+        reward = 1 / reward
+
+        done = False
+
+        return reward, done
+
     def step(self, action):
         """
         observation -  [x,phi,theta,dx,dphi,dtheta]
@@ -113,29 +144,46 @@ class DoublePendulumEnv(gym.Env):
         done = False
         info = {}
         self._take_action(action)
-
-        reward, done = self._reward_function(done)
+        self.state_history.append(self.state)
+        self.action_history.append(action)
+        reward, done = self.reward_function3()
         return np.array(self.state), reward, done, info
+
+    def animate(self, i, line):
+        """perform animation step"""
+        XY = state_to_coords(self.state_history[i])
+        line.set_data(XY[0], XY[1])
+        return line,
 
     def render(self):
         """
         Compute the render frames as specified by render_mode attribute during initialization of the environment.
-
         """
-        state = self.state
-        ani = animation.FuncAnimation(fig, animate, frames=300,
-                                      interval=20, blit=True, init_func=init)
-        plt.show()
+        fig = plt.figure()
+        ax = fig.add_subplot(111, aspect='equal', autoscale_on=False, xlim=(-4, 4), ylim=(-2, 2))
+        ax.grid()
+        line, = ax.plot([], [], 'o-', lw=2)
+        animation_func = lambda i: self.animate(i, line)
+
+        ani = animation.FuncAnimation(fig, animation_func, frames=len(self.state_history), interval=20, blit=True)
+        return ani
 
     def reset(self):
         """
         Resets the environment to an initial state and returns the initial observation.
         """
-        self.rew_sum = 0
+
         self.state = self.init_state
-        d = np.random.uniform(-self.max_initial_angle, self.max_initial_angle)
+        self.action_history = []
+
         self.state[1] = np.pi / 2 + np.random.uniform(-self.max_initial_angle, self.max_initial_angle)
         self.state[2] = np.pi / 2 + np.random.uniform(-self.max_initial_angle, self.max_initial_angle)
 
-        return np.array(self.state)
+        self.state_history = [self.init_state]
+        done = True
+
+        return np.array(self.state), done
+
+
+
 
