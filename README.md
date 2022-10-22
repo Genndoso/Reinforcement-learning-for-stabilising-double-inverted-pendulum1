@@ -37,11 +37,16 @@ You can see below the learning curves along with gifs of agents  play the Invert
 Episode rewards curves:
 
 Random initial state (90 +- 3 degrees)
-![Random_initial_state](https://user-images.githubusercontent.com/53058704/197342315-3c3afa99-9ba3-4a4e-b0fa-f3119e7fe339.png){ width: 100px; }
+<p align="center">
+<img src="https://user-images.githubusercontent.com/53058704/197342315-3c3afa99-9ba3-4a4e-b0fa-f3119e7fe339.png" width="500">
+</p>
 
 
 Fixed initial state (90 degrees)
-![Fixed initial state](https://user-images.githubusercontent.com/53058704/197342307-4e591c1a-606b-4fc1-aacc-9076d766bb12.png){ width: 200px; }
+<p align="center">
+<img  src="https://user-images.githubusercontent.com/53058704/197342642-01feb722-0eac-4e39-8b77-87731752b208.png" width="500">
+</p>
+
 
 
 Agent after 100k timesteps of training
