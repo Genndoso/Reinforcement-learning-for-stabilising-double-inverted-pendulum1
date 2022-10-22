@@ -35,16 +35,21 @@ Algorithms which was used
 You can see below the learning curves along with gifs of agents  play the Inverted Double Pendulum and Inverted Pendulum Swing environment.
 ## Proximal policy optimization 
 Episode rewards curves:
+
 Random initial state (90 +- 3 degrees)
 ![Random_initial_state](https://user-images.githubusercontent.com/53058704/197342315-3c3afa99-9ba3-4a4e-b0fa-f3119e7fe339.png)
+
+
 Fixed initial state (90 degrees)
 ![Fixed initial state](https://user-images.githubusercontent.com/53058704/197342307-4e591c1a-606b-4fc1-aacc-9076d766bb12.png)
 
 
 Agent after 100k timesteps of training
 https://user-images.githubusercontent.com/53058704/197342248-bbffe58d-8622-4905-a9ad-700115f19b6b.mp4
+
 Agent after 500k timesteps of training
 https://user-images.githubusercontent.com/53058704/197342203-baab4294-b834-4a31-b5dc-99aec6f2a4aa.mp4
+
 Agent after 1000k timesteps of training
 https://user-images.githubusercontent.com/53058704/197342264-83ee60cb-3d8e-4172-a191-b5023569f3ab.mp4
 
