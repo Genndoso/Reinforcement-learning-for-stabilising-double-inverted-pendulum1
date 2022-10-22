@@ -2,42 +2,42 @@ from .Proximal_Policy_Optimization import PPO, unscaled_action
 from Environment import DoublePendulumEnv
 import numpy as np
 import os
-
+from .config_PPO import config
 
 state = [0, np.pi/2, np.pi/2, 0, 0, 0]
 
-def train(max_episode_length = 200, max_training_steps = 1e6, number_of_epochs = 100, gamma = 0.99):
+def train():
     print("============================================================================================")
     # max. timestep per episode. For DoubleCartPoleEnv, time constraint is 200 timesteps. After that environment is
     # reset.
-    max_ep_len = max_episode_length
+    max_ep_len = config['max_episode_length']
     # The training phase will sample and update for 1 million timestep.
-    max_training_steps = int(max_training_steps)
+    max_training_steps = int(config['max_training_steps'])
 
     # In order, to check ongoing progress, average reward is printed at every 10_000 timesteps.
     print_freq = 10_000
 
     # Saving model parameters at every 1_00_000 timesteps.
-    save_model_freq = int(1e5)
+    save_model_freq = int(config['save_model_freq'])
 
-    action_std = 0.6  # Initial standard deviation.
-    action_std_decay_rate = 0.1  # Decay rate of standard deviation.
-    min_action_std = 0.1  # Threshold standard deviation.
-    action_std_decay_freq = int(2e5)  # Decay the standard deviation every 2_00_000 timesteps
+    action_std = config['action_std']  # Initial standard deviation.
+    action_std_decay_rate = config['action_std_decay_rate']  # Decay rate of standard deviation.
+    min_action_std = config['min_action_std']  # Threshold standard deviation.
+    action_std_decay_freq = int(2e5)  # Decay the standard deviation every 200000 timesteps
 
-    update_timestep = 5000  # set old_policy parameters to new_policy parameters.
-    K_epochs = number_of_epochs  # Number of epochs before updating old policy parameters.
-    eps_clip = 0.2  # clip range for surrogate loss function.
-    gamma = gamma  # Discount factor.
+    update_timestep = config['update_timestep']  # set old_policy parameters to new_policy parameters.
+    K_epochs = config['max_number_of_epoch']  # Number of epochs before updating old policy parameters.
+    eps_clip = config['eps_clip']  # clip range for surrogate loss function.
+    gamma = config['gamma']  # Discount factor.
 
-    lr_actor = 3e-4  # Learning rate for optimizer of actor network.
-    lr_critic = 0.001  # Learning rate for optimizer of critic network.
+    lr_actor = config['lr_actor']  # Learning rate for optimizer of actor network.
+    lr_critic = config['lr_critic']  # Learning rate for optimizer of critic network.
     env_name = 'DoubleInvPendulum'
     print("Training Environment:" + env_name)
-    env = DoublePendulumEnv(init_state=state, dt=0.02)
+    env = DoublePendulumEnv(init_state=state, dt=config['dt'])
 
-    observation_shape = 6  # Observation shape
-    action_shape = 1  # Action shape
+    observation_shape = env.observation_space.shape[0]  # Observation shape
+    action_shape = env.action_space.shape[0]  # Action shape
 
     directory = "PPO2_Trained"
     if not os.path.exists(directory):

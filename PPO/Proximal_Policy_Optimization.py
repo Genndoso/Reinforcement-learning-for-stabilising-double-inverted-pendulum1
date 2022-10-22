@@ -8,6 +8,8 @@ from gym.spaces import Box
 import random
 from IPython.display import clear_output
 from torch.distributions import MultivariateNormal
+from .config_PPO import config
+
 
 class RolloutBuffer:
     """
@@ -40,10 +42,10 @@ class ActorCritic(nn.Module):
         super(ActorCritic, self).__init__()
 
         self.action_dim = action_dim
-        # Instead of directly using variane as input to normal distribution, standard deviation is set as hyperparameter
+        # Instead of directly using variance as input to normal distribution, standard deviation is set as hyperparameter
         # and used to calculate the variance.
         self.action_var = torch.full((action_dim,), action_std_init * action_std_init)
-        # Actor NN
+        # Actor neural network
         self.hidden_size = hidden_size
         self.actor = nn.Sequential(
             nn.Linear(state_dim, self.hidden_size),
@@ -57,7 +59,7 @@ class ActorCritic(nn.Module):
             nn.Linear(self.hidden_size, action_dim),
             nn.Tanh()
         )
-        # Critic NN
+        # Critic neural network
         self.critic = nn.Sequential(
             nn.Linear(state_dim, self.hidden_size),
             nn.LeakyReLU(),
@@ -72,8 +74,8 @@ class ActorCritic(nn.Module):
 
     def set_action_std(self, new_action_std):
         """
-        Performance of PPO is sensitive to standard deviation. The standard deviation is decaying by 0.05
-        every 90000 timestep. This function sets new standard deviation to be used while creating normal distribution.
+        Performance of PPO is sensitive to standard deviation
+        This function sets new standard deviation to be used while creating normal distribution.
         """
         self.action_var = torch.full((self.action_dim,), new_action_std * new_action_std)
 
