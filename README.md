@@ -30,7 +30,7 @@ Algorithms which was used
 |`networks.py`        | Networks in used by agents (Actor, Critic and Value networks)      |
 |`utils.py`           | General utility functions                                          |
 |`buffer.py`          | A replay buffer class, used for offline training                   |
-|`SAC_notebook.ipynb` | A SAC notebook to run on Colab with GPU                            |
+
 
 
 ## Proximal policy optimization 
