@@ -257,7 +257,7 @@ class PPO:
         self.policy.load_state_dict(torch.load(checkpoint_path, map_location=lambda storage, loc: storage))
 
 
-def unscaled_action(scaled_action, action_low=-500, action_high=500):
+def unscaled_action(scaled_action, action_low=-100, action_high=100):
     """
     A tanh() activation function is applied before getting output from actor network. Therefore, the mean is bounded
     to (-1, 1). The action space for the control problem is (-10, +10). An unscaling of action is needed to explore

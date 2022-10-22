@@ -1,22 +1,12 @@
 import gym
 from gym.spaces import Box
-from Dynamics import state_to_coords, get_next_state
+from Dynamics import state_to_coords, get_next_state, normalize_angle
 import numpy as np
 from matplotlib import animation
 import matplotlib.pyplot as plt
 # normalized angle
 
-def normalize_angle(angle):
-    """
-    3*pi gives -pi, 4*pi gives 0 etc, etc. (returns the negative difference
-    from the closest multiple of 2*pi)
-    """
-    normalized_angle = abs(angle)
-    normalized_angle = normalized_angle % (2*np.pi)
-    if normalized_angle > np.pi:
-        normalized_angle = normalized_angle - 2*np.pi
-    normalized_angle = abs(normalized_angle)
-    return normalized_angle
+
 
 
 class DoublePendulumEnv(gym.Env):

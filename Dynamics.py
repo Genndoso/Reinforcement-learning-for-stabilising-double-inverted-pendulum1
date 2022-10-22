@@ -2,6 +2,22 @@ from casadi import *
 from scipy import integrate
 
 
+
+def normalize_angle(angle):
+    """
+    3*pi gives -pi, 4*pi gives 0 etc, etc. (returns the negative difference
+    from the closest multiple of 2*pi)
+    """
+    normalized_angle = (angle)
+    normalized_angle = normalized_angle % (2*np.pi)
+    if normalized_angle > np.pi:
+        normalized_angle = normalized_angle - 2*np.pi
+
+    return normalized_angle
+
+
+
+
 t = SX.sym('t')
 l = SX.sym('l',2)
 m = SX.sym('m',3)
@@ -70,7 +86,10 @@ my_P = Function('P',[phi],my_P)
 
 
 def get_next_state(state, u, dt):
-    return integrate.odeint(lambda x,t: my_rhs.call([x[:3],x[3:],[u]])[0].T.full()[0] , state, [0,dt])[1]
+    next_state = integrate.odeint(lambda x,t: my_rhs.call([x[:3],x[3:],[u]])[0].T.full()[0] , state, [0,dt])[1]
+    next_state[1] = normalize_angle(next_state[1])
+    next_state[2] = normalize_angle(next_state[2])
+    return next_state
 def state_to_coords(state):
     return my_P.call([state[:3]])[0].full()
 def get_energy(state):
