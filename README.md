@@ -45,13 +45,16 @@ Fixed initial state (90 degrees)
 
 
 Agent after 100k timesteps of training
-https://user-images.githubusercontent.com/53058704/197342248-bbffe58d-8622-4905-a9ad-700115f19b6b.mp4
+![PPO_100K](https://user-images.githubusercontent.com/53058704/197342394-5273b20d-a462-4ffc-bd20-7fb08159e4ed.gif)
+
 
 Agent after 500k timesteps of training
-https://user-images.githubusercontent.com/53058704/197342203-baab4294-b834-4a31-b5dc-99aec6f2a4aa.mp4
+![PPO_500K](https://user-images.githubusercontent.com/53058704/197342398-55ca8314-a958-4e78-b3b6-6c6901a39e16.gif)
+
 
 Agent after 1000k timesteps of training
-https://user-images.githubusercontent.com/53058704/197342264-83ee60cb-3d8e-4172-a191-b5023569f3ab.mp4
+![PPO_1000K](https://user-images.githubusercontent.com/53058704/197342402-f543e5f5-07e7-4573-b78d-378036598564.gif)
+
 
 
 
