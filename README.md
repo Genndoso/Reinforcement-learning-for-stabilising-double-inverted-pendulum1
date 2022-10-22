@@ -32,8 +32,9 @@ Algorithms which was used
 |`buffer.py`          | A replay buffer class, used for offline training                   |
 
 
-
+You can see below the learning curves along with gifs of agents  play the Inverted Double Pendulum and Inverted Pendulum Swing environment.
 ## Proximal policy optimization 
+(/PPO/PPO_plots/PPO_500K.mp4)
 
 
 ## Model predictive control
