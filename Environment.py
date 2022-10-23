@@ -20,8 +20,9 @@ class ActionSpaceCartPole():
 class DoublePendulumEnv(gym.Env):
 
     def __init__(self, init_state, dt=0.02, max_initial_angle=3 * 2 * np.pi / 360):
-        self.action_space = 1
-        self.observation_space = 6
+        self.action_space = Box(np.array([-10]), np.array([10]))
+
+        self.observation_space = ObservationSpaceCartPole()
         self.state = init_state
         self.init_state = init_state
         self.dt = dt
@@ -34,7 +35,7 @@ class DoublePendulumEnv(gym.Env):
     def _take_action(self, action):
         self.state = get_next_state(self.state, action, self.dt)
 
-    def _reward_function(self, done):
+    def _reward_function(self):
         """
 
         # Reward system 1
@@ -60,27 +61,32 @@ class DoublePendulumEnv(gym.Env):
 
 
         """
+        done = False
         state = self.state
         reward = 0
         # degree reward
-        normalized_angle_1 = np.degrees(normalize_angle(state[1]))
-        normalized_angle_2 = np.degrees(normalize_angle(state[2]))
+        normalized_angle_1 = np.degrees((state[1]))
+        normalized_angle_2 = np.degrees((state[2]))
 
-        if normalized_angle_1 > 87 and normalized_angle_1 < 93:
-            reward = 1 - (90 - normalized_angle_1) * 0.01
-            if normalized_angle_2 > 87 and normalized_angle_2 < 93:
-                reward += reward + 1 - (90 - normalized_angle_2) * 0.01
-            reward *= 4
+        #
+        # if normalized_angle_1 > 80 and normalized_angle_1 < 100:
+        #     reward = 1 - (90 - normalized_angle_1) * 0.01
+        #     if normalized_angle_2 > 80 and normalized_angle_2 < 105:
+        #         reward += reward + 1 - (90 - normalized_angle_2) * 0.01
+        #     reward *= 2
+        #     print(True)
+        #
+        #
+        # else:
+        #
+        #     reward = -100
+        #     done = True
 
-        else:
-            reward = -100
-            done = True
+      #  another degree reward system
+        cost = 2*(normalize_angle(state[1])/2 - np.pi/2) + \
+                       2*(normalize_angle(state[2])/2 - np.pi/2)
 
-        # another degree reward system
-        # cost = 2*(normalize_angle(state[1]) - np.pi/2) + \
-        #                2*(normalize_angle(state[2]) - np.pi/2)
-
-        # reward = -np.abs(cost)
+        reward = -np.abs(cost)
 
         # another degree_reward system
 
@@ -90,11 +96,11 @@ class DoublePendulumEnv(gym.Env):
         #         print(state[1])
 
         # distance penalty
-        if state[0] < 2 and state[0] > -2:
-            pass
-        else:
+
+        if state[0] > 1 or state[0] < -1:
             reward -= -100
             done = True
+
 
         # distance2 rew
         # state_coords = state_to_coords(state)
@@ -109,12 +115,18 @@ class DoublePendulumEnv(gym.Env):
         return reward, done
 
     def reward_function3(self):
-        goal = np.array([-1, 0])
+        goal = np.array([0, 0])
         coords = np.array(state_to_coords(self.state)[:, 0])
         reward = max(np.linalg.norm(coords - goal), 0.0001)
         reward = 1 / reward
 
         done = False
+
+        if self.state[0] < 2 and self.state[0] > -2:
+            pass
+        else:
+            reward -= -100
+            done = True
 
         return reward, done
 
@@ -146,7 +158,7 @@ class DoublePendulumEnv(gym.Env):
         self._take_action(action)
         self.state_history.append(self.state)
         self.action_history.append(action)
-        reward, done = self.reward_function3()
+        reward, done = self._reward_function()
         return np.array(self.state), reward, done, info
 
     def animate(self, i, line):
@@ -180,7 +192,7 @@ class DoublePendulumEnv(gym.Env):
         self.state[2] = np.pi / 2 + np.random.uniform(-self.max_initial_angle, self.max_initial_angle)
 
         self.state_history = [self.init_state]
-        done = True
+        done = False
 
         return np.array(self.state), done
 

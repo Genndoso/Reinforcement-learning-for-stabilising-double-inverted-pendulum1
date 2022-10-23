@@ -85,10 +85,11 @@ my_P = substitute([P],[m,l],[m_real,l_real])
 my_P = Function('P',[phi],my_P)
 
 
-def get_next_state(state, u, dt):
+def get_next_state(state, u, dt, normalize = True):
     next_state = integrate.odeint(lambda x,t: my_rhs.call([x[:3],x[3:],[u]])[0].T.full()[0] , state, [0,dt])[1]
-  #  next_state[1] = normalize_angle(next_state[1])
-   # next_state[2] = normalize_angle(next_state[2])
+    if normalize:
+       next_state[1] = normalize_angle(next_state[1])
+       next_state[2] = normalize_angle(next_state[2])
     return next_state
 def state_to_coords(state):
     return my_P.call([state[:3]])[0].full()

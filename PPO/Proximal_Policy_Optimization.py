@@ -1,4 +1,4 @@
-from Environment import DoublePendulumEnv
+from Environment import DoublePendulumEnv, ActionSpaceCartPole, ObservationSpaceCartPole
 from torch import nn
 import torch
 from torch.utils.tensorboard import SummaryWriter
@@ -37,45 +37,51 @@ class RolloutBuffer:
         del self.dones[:]
 
 
-class ActorCritic(nn.Module):
-    def __init__(self, state_dim, action_dim, action_std_init, hidden_size=64):
-        super(ActorCritic, self).__init__()
 
-        self.action_dim = action_dim
+class ActorCritic(nn.Module):
+    def __init__(self, state_dim = ObservationSpaceCartPole(), action_dim = ActionSpaceCartPole(), action_std_init = config['action_std'], hidden_size = config['hidden_size']):
+        super(ActorCritic, self).__init__()
+        self.state_dim = 6
+        self.action_dim = 1
         # Instead of directly using variance as input to normal distribution, standard deviation is set as hyperparameter
         # and used to calculate the variance.
         self.action_var = torch.full((action_dim,), action_std_init * action_std_init)
-        # Actor neural network
+        # Actor NN
         self.hidden_size = hidden_size
         self.actor = nn.Sequential(
             nn.Linear(state_dim, self.hidden_size),
-            nn.LeakyReLU(),
+            nn.Tanh(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.LeakyReLU(),
+            nn.Tanh(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.LeakyReLU(),
+            nn.Tanh(),
+            nn.Dropout(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.LeakyReLU(),
+            nn.Tanh(),
+            nn.Dropout(),
             nn.Linear(self.hidden_size, action_dim),
             nn.Tanh()
         )
-        # Critic neural network
+        # Critic NN
         self.critic = nn.Sequential(
             nn.Linear(state_dim, self.hidden_size),
-            nn.LeakyReLU(),
+            nn.Tanh(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.LeakyReLU(),
+            nn.Tanh(),
+            nn.Dropout(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.LeakyReLU(),
+            nn.Tanh(),
+            nn.Dropout(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.LeakyReLU(),
+            nn.Tanh(),
+            nn.Dropout(),
             nn.Linear(self.hidden_size, 1)
         )
 
     def set_action_std(self, new_action_std):
         """
-        Performance of PPO is sensitive to standard deviation
-        This function sets new standard deviation to be used while creating normal distribution.
+        Performance of PPO is sensitive to standard deviation. The standard deviation is decaying by 0.05
+        every 90000 timestep. This function sets new standard deviation to be used while creating normal distribution.
         """
         self.action_var = torch.full((self.action_dim,), new_action_std * new_action_std)
 
@@ -259,9 +265,10 @@ class PPO:
         self.policy.load_state_dict(torch.load(checkpoint_path, map_location=lambda storage, loc: storage))
 
 
-def unscaled_action(scaled_action, action_low= config['action_low'], action_high= config['action_high']):
+def unscaled_action(scaled_action, action_low=-10, action_high=10):
     """
     A tanh() activation function is applied before getting output from actor network. Therefore, the mean is bounded
-    to (-1, 1).An unscaling of action is needed to explore the action space of control problem.
+    to (-1, 1). An unscaling of action is needed to explore
+    the action space of control problem.
     """
     return action_low + (0.5 *(scaled_action + 1.0) * (action_high - action_low))

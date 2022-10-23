@@ -86,7 +86,7 @@ def train():
     plot_reward = []
 
     while time_step <= max_training_steps:
-        obs = env.reset()
+        obs, done = env.reset()
         current_ep_reward = 0
         for t in range(1, max_ep_len + 1):
             action = agent.select_action(obs)  # Get action under old_policy given state.
