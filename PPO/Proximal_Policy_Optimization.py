@@ -3,7 +3,7 @@ from torch import nn
 import torch
 from torch.utils.tensorboard import SummaryWriter
 import gym
-from torch.distributions import Normal
+from torch.distributions import Normal, Categorical
 from gym.spaces import Box
 import random
 from IPython.display import clear_output
@@ -35,9 +35,6 @@ class RolloutBuffer:
         del self.logprobs[:]
         del self.rewards[:]
         del self.dones[:]
-
-
-
 class ActorCritic(nn.Module):
     def __init__(self, state_dim = ObservationSpaceCartPole(), action_dim = ActionSpaceCartPole(), action_std_init = config['action_std'], hidden_size = config['hidden_size']):
         super(ActorCritic, self).__init__()
@@ -74,7 +71,6 @@ class ActorCritic(nn.Module):
             nn.Dropout(),
             nn.Linear(self.hidden_size, self.hidden_size),
             nn.Tanh(),
-            nn.Dropout(),
             nn.Linear(self.hidden_size, 1)
         )
 
@@ -111,7 +107,7 @@ class ActorCritic(nn.Module):
         during sampling phase.
         """
         action_mean = self.actor(state)
-
+        action_mean = torch.clamp(action_mean, min = config['action_low'], max = config['action_high'])
         action_var = self.action_var.expand_as(action_mean)
         cov_mat = torch.diag_embed(action_var)
         policy = MultivariateNormal(action_mean, cov_mat)
@@ -128,12 +124,12 @@ class ActorCritic(nn.Module):
 
 
 class PPO:
-    def __init__(self, state_dim, action_dim, lr_actor, lr_critic, gamma, K_epochs, eps_clip, action_std_init=0.6):
+    def __init__(self, state_dim, action_dim, lr_actor = config['lr_actor'], lr_critic = config['lr_critic'], action_std_init = config['action_std']):
         self.action_std = action_std_init
 
-        self.gamma = gamma  # Discount factor
-        self.eps_clip = eps_clip  # Clipping range for Clipped Surrogate Function.
-        self.K_epochs = K_epochs  # Total number of epochs.
+        self.gamma = config['gamma']  # Discount factor
+        self.eps_clip = config['eps_clip']  # Clipping range for Clipped Surrogate Function.
+        self.K_epochs = config['max_number_of_epoch']  # Total number of epochs.
 
         self.buffer = RolloutBuffer()
 
@@ -181,6 +177,7 @@ class PPO:
             state = torch.FloatTensor(state)
             action, action_logprob = self.policy_old.get_action(state)
 
+        action = torch.clamp(action, min=config['action_low'], max=config['action_high'])
         self.buffer.states.append(state)
         self.buffer.actions.append(action)
         self.buffer.logprobs.append(action_logprob)
@@ -238,7 +235,7 @@ class PPO:
             # Combined loss of PPO
             value_loss = self.MseLoss(state_values, rewards)
 
-            loss = -policy_loss + 0.5 * value_loss - 0.01 * policy_entropy
+            loss = -policy_loss + 0.5 * value_loss - 0.03 * policy_entropy
 
             # Optimization step
             self.optimizer.zero_grad()
@@ -265,7 +262,7 @@ class PPO:
         self.policy.load_state_dict(torch.load(checkpoint_path, map_location=lambda storage, loc: storage))
 
 
-def unscaled_action(scaled_action, action_low=-10, action_high=10):
+def unscaled_action(scaled_action, action_low= config['action_low'], action_high = config['action_high']):
     """
     A tanh() activation function is applied before getting output from actor network. Therefore, the mean is bounded
     to (-1, 1). An unscaling of action is needed to explore
