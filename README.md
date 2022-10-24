@@ -70,10 +70,11 @@ Agent after 1000k timesteps of training
 
 ## Model predictive control
 Balancing task
-https://github.com/Genndoso/Reinforcement-learning-for-stabilising-double-inverted-pendulum1/blob/Slava/T2N14Steps500.gif
+![balancing](https://github.com/Genndoso/Reinforcement-learning-for-stabilising-double-inverted-pendulum1/blob/Slava/T2N14Steps500.gif)
+
 
 Swing up
-https://github.com/Genndoso/Reinforcement-learning-for-stabilising-double-inverted-pendulum1/blob/Slava/T2N14x0.1.gif
+![swingup](https://github.com/Genndoso/Reinforcement-learning-for-stabilising-double-inverted-pendulum1/blob/Slava/T2N14x0.1.gif)
 
 
 ## How to use
