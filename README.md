@@ -1,5 +1,7 @@
 # Reinforcement-learning-for-stabilising-double-inverted-pendulum1
 This is a final project of Reinforcement learning course at skoltech which is devoted for stabilising double inverted pendulum
+
+
 Kovalev.V.V
 Maxim.P
 ### We pursued several problems:
@@ -8,3 +10,5 @@ Maxim.P
 ### We'v applemented Dinamics of system on Casadi, constructed environmet, run it all on the methods bellow: 
 *  MPC
 *  PPO
+*  ...
+### You may see gif results in the corresponding folders
