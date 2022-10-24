@@ -35,6 +35,8 @@ class RolloutBuffer:
         del self.logprobs[:]
         del self.rewards[:]
         del self.dones[:]
+
+
 class ActorCritic(nn.Module):
     def __init__(self, state_dim = ObservationSpaceCartPole(), action_dim = ActionSpaceCartPole(), action_std_init = config['action_std'], hidden_size = config['hidden_size']):
         super(ActorCritic, self).__init__()
@@ -62,15 +64,13 @@ class ActorCritic(nn.Module):
         # Critic NN
         self.critic = nn.Sequential(
             nn.Linear(state_dim, self.hidden_size),
-            nn.Tanh(),
+            nn.LeakyReLU(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.Tanh(),
-            nn.Dropout(),
+            nn.LeakyReLU(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.Tanh(),
-            nn.Dropout(),
+            nn.LeakyReLU(),
             nn.Linear(self.hidden_size, self.hidden_size),
-            nn.Tanh(),
+            nn.LeakyReLU(),
             nn.Linear(self.hidden_size, 1)
         )
 
@@ -107,7 +107,7 @@ class ActorCritic(nn.Module):
         during sampling phase.
         """
         action_mean = self.actor(state)
-        action_mean = torch.clamp(action_mean, min = config['action_low'], max = config['action_high'])
+      #  action_mean = torch.clamp(action_mean, min = config['action_low'], max = config['action_high'])
         action_var = self.action_var.expand_as(action_mean)
         cov_mat = torch.diag_embed(action_var)
         policy = MultivariateNormal(action_mean, cov_mat)

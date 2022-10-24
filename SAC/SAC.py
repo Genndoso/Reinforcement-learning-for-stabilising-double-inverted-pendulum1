@@ -109,8 +109,8 @@ class Actor(nn.Module):
 
     def forward(self, state):
 
-        x = F.tanh(self.fc1(state))
-        x = F.tanh(self.fc2(x))
+        x = F.leaky_relu(self.fc1(state))
+        x = F.leaky_relu(self.fc2(x))
 
         mu = self.mu(x)
         sigma = self.sigma(x)
@@ -163,8 +163,8 @@ class Value(nn.Module):
         self.to(self.device)
 
     def forward(self, state):
-        x = F.relu(self.fc1(state))
-        x = F.relu(self.fc2(x))
+        x = F.leaky_relu(self.fc1(state))
+        x = F.leaky_relu(self.fc2(x))
         v = self.v(x)
         return v
 

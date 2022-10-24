@@ -41,23 +41,18 @@ class DoublePendulumEnv(gym.Env):
         # Reward system 1
         Check whether 1 and 2 cart pole are in angle range between 80 and 100 degrees
         agent will agent a reward in range [0, 1]
-
         else:
-            If angle of pole 1 and 2  are greater than 10 degrees, therefore, it makes sense
+            If angle of pole 1 and 2  are lower than 80 and higher than 100 degrees, therefore, it makes sense
             to terminate the environment and reset/restart.
-            agent will get a  reward = -1
+            agent will get a  reward = -100
 
         # Reward system 2
-        If cart is in given range of x = [-5, 5] then agent will get a reward 0.5 every steps.
-        Otherwise, it penalies the system heavily of a penalty = -50 and system is done here.
+        If cart is out of a given range of x = [-2, 2] then terminates the environment and
+         penalize the system heavily of a penalty = -100 and system is done here.
+
 
         # Reward system 3
-        # this is unused. This an analog to reward system 1 but for coordinates
-        If cart pole is not in the same line with cart then it will give additional penalty
-
-
-        # Reward system 4
-        Velocity penalty (halves the reward if spinning too fast)
+        Penalize the system if spinning to fast
 
 
         """
@@ -69,7 +64,7 @@ class DoublePendulumEnv(gym.Env):
         normalized_angle_2 = np.degrees((state[2]))
 
         #
-        if normalized_angle_1 > 85 and normalized_angle_1 < 95:
+        if normalized_angle_1 > 80 and normalized_angle_1 < 95:
             reward = 1 - (90 - normalized_angle_1) * 0.01
             if normalized_angle_2 > 85 and normalized_angle_2 < 95:
                 reward += reward + 1 - (90 - normalized_angle_2) * 0.01
@@ -169,7 +164,7 @@ class DoublePendulumEnv(gym.Env):
         self._take_action(action)
         self.state_history.append(self.state)
         self.action_history.append(action)
-        reward, done = self._reward_function2()
+        reward, done = self._reward_function()
         return np.array(self.state), reward, done, info
 
     def animate(self, i, line):
