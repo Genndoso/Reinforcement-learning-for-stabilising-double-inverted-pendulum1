@@ -1,5 +1,11 @@
 # Reinforcement learning for stabilising double inverted pendulum
 This is a final project of Reinforcement learning course at skoltech which is devoted for stabilising double inverted pendulum
+by Kovalev.V.V and  Maximilian.P
+
+
+### We pursued several problems:
+* stabilizing cart pole with the horizontal axis, when initstate  = $[0,\pi / 2 + \sigma,\pi / 2 + \sigma,0,0,0]$
+* force the swing up of pendulum
 
 
 # 
@@ -49,7 +55,6 @@ Fixed initial state (90 degrees)
 </p>
 
 
-
 Agent after 100k timesteps of training
 ![PPO_100K](https://user-images.githubusercontent.com/53058704/197342394-5273b20d-a462-4ffc-bd20-7fb08159e4ed.gif)
 
@@ -63,13 +68,14 @@ Agent after 1000k timesteps of training
 
 
 
-
-
-
 ## Model predictive control
+Balancing task
+https://github.com/Genndoso/Reinforcement-learning-for-stabilising-double-inverted-pendulum1/blob/Slava/T2N14Steps500.gif
 
+Swing up
+https://github.com/Genndoso/Reinforcement-learning-for-stabilising-double-inverted-pendulum1/blob/Slava/T2N14x0.1.gif
 
 
 ## How to use
-All PPO the trained models are stored in `PPO/PPO3_Trained`. In order check results launch 'Visualizetion.ipynb'
+All PPO the trained models are stored in `PPO/PPO3_Trained`. In order check results launch 'Visualization.ipynb'
 
