@@ -77,5 +77,7 @@ https://github.com/Genndoso/Reinforcement-learning-for-stabilising-double-invert
 
 
 ## How to use
+For each algorithm used you can try to launch and test the provided jupyter notebooks
 All PPO the trained models are stored in `PPO/PPO3_Trained`. In order check results launch 'Visualization.ipynb'
+
 
