@@ -16,9 +16,10 @@ Algorithms which was used
 |Folder name       |                     Description                                    |
 |------------------|--------------------------------------------------------------------|
 |`1_pole_inverted_pendulum`             |  Source code for simple case of inverted pendulum                                           |
-|`DDQN`            | Results of training deep double Q-network for stabilising double inverted pendulum                              |
+|`DDQN`            | Results of training deep double Q-network                               |
 |`MPC`          | Model predictive control using Casadi optimization                 |
-|`MPC`          |  Results of training Proximal policy optimization for stabilising double inverted pendulum                 |
+|`PPO`          |  Results of training Proximal policy optimization              |
+|`SAC`          |  Results of training Soft Actor critic                 |
 
 
 ### Files
