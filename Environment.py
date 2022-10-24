@@ -14,14 +14,17 @@ class ObservationSpaceCartPole():
 class ActionSpaceCartPole():
     def __init__(self):
         self.shape = (1,)
-        self.bounds = (-2, 2)
+        self.bounds = (-20, 20)
 
 
 class DoublePendulumEnv(gym.Env):
 
-    def __init__(self, init_state, dt=0.02, max_initial_angle = 3 * 2 * np.pi / 360):
-        self.action_space = Box(np.array([-10]), np.array([10]), dtype = np.float64)
-       # self.action_space = np.array([-10,10,-5,5,-1,1,0])
+    def __init__(self, init_state, dt=0.02, max_initial_angle = 3 * 2 * np.pi / 360, discretized_actions = False):
+        if discretized_actions:
+            self.action_space = np.array([-10, 10, -5, 5, -1, 1, 0, 2, -2, 4, -4, 3, -3])
+        else:
+            self.action_space = Box(np.array([-10]), np.array([10]), dtype = np.float64)
+
         self.observation_space = ObservationSpaceCartPole()
         self.state = init_state
         self.init_state = init_state
@@ -113,9 +116,7 @@ class DoublePendulumEnv(gym.Env):
         coords = np.array(state_to_coords(self.state)[:, 0])
         reward = max(np.linalg.norm(coords - goal), 0.0001)
         reward = 1 / reward
-
-
-
+        done = False
         return reward, done
 
     def _reward_function2(self):

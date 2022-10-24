@@ -234,8 +234,9 @@ class PPO:
 
             # Combined loss of PPO
             value_loss = self.MseLoss(state_values, rewards)
+           # print(policy_entropy, policy_loss, value_loss)
 
-            loss = -policy_loss + 0.5 * value_loss - 0.03 * policy_entropy
+            loss = -policy_loss + 0.5 * value_loss #- 0.03 * policy_entropy
 
             # Optimization step
             self.optimizer.zero_grad()
