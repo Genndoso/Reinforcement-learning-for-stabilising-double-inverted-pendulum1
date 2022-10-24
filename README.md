@@ -1,5 +1,11 @@
 # Reinforcement learning for stabilising double inverted pendulum
 This is a final project of Reinforcement learning course at skoltech which is devoted for stabilising double inverted pendulum
+by Kovalev.V.V and  Maximilian.P
+
+
+### We pursued several problems:
+* stabilizing cart pole with the horizontal axis, when initstate  = $[0,\pi / 2 + \sigma,\pi / 2 + \sigma,0,0,0]$
+* force the swing up of pendulum
 
 
 # 
@@ -16,9 +22,10 @@ Algorithms which was used
 |Folder name       |                     Description                                    |
 |------------------|--------------------------------------------------------------------|
 |`1_pole_inverted_pendulum`             |  Source code for simple case of inverted pendulum                                           |
-|`DDQN`            | Results of training deep double Q-network for stabilising double inverted pendulum                              |
+|`DDQN`            | Results of training deep double Q-network                               |
 |`MPC`          | Model predictive control using Casadi optimization                 |
-|`MPC`          |  Results of training Proximal policy optimization for stabilising double inverted pendulum                 |
+|`PPO`          |  Results of training Proximal policy optimization              |
+|`SAC`          |  Results of training Soft Actor critic                 |
 
 
 ### Files
@@ -48,7 +55,6 @@ Fixed initial state (90 degrees)
 </p>
 
 
-
 Agent after 100k timesteps of training
 ![PPO_100K](https://user-images.githubusercontent.com/53058704/197342394-5273b20d-a462-4ffc-bd20-7fb08159e4ed.gif)
 
@@ -58,14 +64,22 @@ Agent after 500k timesteps of training
 
 
 Agent after 1000k timesteps of training
-![PPO_1000K](https://user-images.githubusercontent.com/53058704/197342402-f543e5f5-07e7-4573-b78d-378036598564.gif)
-
+![2022-10-24-19-20-36](https://user-images.githubusercontent.com/53058704/197576432-e5773292-9b62-4f3f-821b-2555f7183c58.gif)
 
 
 
 ## Model predictive control
+Balancing task
+![balancing](https://github.com/Genndoso/Reinforcement-learning-for-stabilising-double-inverted-pendulum1/blob/Slava/T2N14Steps500.gif)
 
+
+Swing up
+![swingup](https://github.com/Genndoso/Reinforcement-learning-for-stabilising-double-inverted-pendulum1/blob/Slava/T2N14x0.1.gif)
 
 
 ## How to use
+For each algorithm used you can try to launch and test the provided jupyter notebooks
+
+All PPO the trained models are stored in `PPO/PPO3_Trained`. In order check results launch 'Visualization.ipynb'
+
 
