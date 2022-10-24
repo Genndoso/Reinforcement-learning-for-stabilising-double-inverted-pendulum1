@@ -59,10 +59,10 @@ Agent after 500k timesteps of training
 
 
 Agent after 1000k timesteps of training
-![PPO_1000K](https://user-images.githubusercontent.com/53058704/197342402-f543e5f5-07e7-4573-b78d-378036598564.gif)
+![2022-10-24-19-20-36](https://user-images.githubusercontent.com/53058704/197576432-e5773292-9b62-4f3f-821b-2555f7183c58.gif)
 
 
-https://user-images.githubusercontent.com/53058704/197576048-85d62756-4945-462f-a7e1-0b9643e2c8b7.mp4
+
 
 
 
