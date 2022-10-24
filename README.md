@@ -69,4 +69,5 @@ Agent after 1000k timesteps of training
 
 
 ## How to use
+All PPO the trained models are stored in `PPO/PPO3_Trained`. In order check results launch 'Visualizetion.ipynb'
 
