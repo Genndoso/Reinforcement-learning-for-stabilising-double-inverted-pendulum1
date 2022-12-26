@@ -1,23 +1,6 @@
 from casadi import *
+import casadi as cs
 from scipy import integrate
-
-
-
-def normalize_angle(angle):
-    """
-    3*pi gives -pi, 4*pi gives 0 etc, etc. (returns the negative difference
-    from the closest multiple of 2*pi)
-    """
-    normalized_angle = (angle)
-    normalized_angle = normalized_angle % (2*np.pi)
-    if normalized_angle > np.pi:
-        normalized_angle = normalized_angle - 2*np.pi
-
-    return normalized_angle
-
-
-
-
 t = SX.sym('t')
 l = SX.sym('l',2)
 m = SX.sym('m',3)
@@ -68,6 +51,17 @@ for i in range(3):
     B += m[i] * (J[i].T @ J[i])
     C += m[i] * (J_dot[i].T @ J[i])
     D += m[i] * (J[i].T)
+##### if you need friction assign mu ##########
+mu = 0
+Friction = cs.SX([[mu,0,0],[0,0,0],[0,0,0]])
+###############################################
+rhs = cs.solve(B,(f + (C - A - Friction) @ dphi - D @ g ))
+rhs = cs.vertcat(dphi,rhs)
+
+m_real = cs.SX([0.5,0.5,0.5])
+l_real = cs.SX([1,1])
+G_real = cs.SX([10])
+
 rhs = solve(B,(f + (C - A) @ dphi - D @ g))
 rhs = vertcat(dphi,rhs)
 
@@ -87,10 +81,8 @@ my_P = Function('P',[phi],my_P)
 
 def get_next_state(state, u, dt, normalize = True):
     next_state = integrate.odeint(lambda x, t: my_rhs.call([x[:3],x[3:],[u]])[0].T.full()[0] , state, [0,dt])[1]
-    if normalize:
-       next_state[1] = normalize_angle(next_state[1])
-       next_state[2] = normalize_angle(next_state[2])
     return next_state
+
 def state_to_coords(state):
     return my_P.call([state[:3]])[0].full()
 def get_energy(state):

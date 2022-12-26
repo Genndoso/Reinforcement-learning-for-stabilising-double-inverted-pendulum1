@@ -1,6 +1,8 @@
 import gym
 from gym.spaces import Box
-from Dynamics import state_to_coords, get_next_state, normalize_angle
+
+from Dynamics import state_to_coords, get_next_state, get_energy
+
 import numpy as np
 from matplotlib import animation
 import matplotlib.pyplot as plt
@@ -14,26 +16,22 @@ class ObservationSpaceCartPole():
 class ActionSpaceCartPole():
     def __init__(self):
         self.shape = (1,)
-        self.bounds = (-20, 20)
+        self.bounds = (-2, 2)
 
 
 class DoublePendulumEnv(gym.Env):
 
-    def __init__(self, init_state, dt=0.02, max_initial_angle = 3 * 2 * np.pi / 360, discretized_actions = False):
-        if discretized_actions:
-            self.action_space = np.array([-10, 10, -5, 5, -1, 1, 0, 2, -2, 4, -4, 3, -3])
-        else:
-            self.action_space = Box(np.array([-10]), np.array([10]), dtype = np.float64)
-
+    def __init__(self, init_state, dt=0.02, plotEnergy = False):
+        self.action_space = ActionSpaceCartPole()
         self.observation_space = ObservationSpaceCartPole()
         self.state = init_state
         self.init_state = init_state
         self.dt = dt
-        print('Environment initialized')
         self.init_coords = state_to_coords(init_state)
-        self.max_initial_angle = max_initial_angle
         self.state_history = [self.init_state]
+        self.plotEnergy = plotEnergy
         self.action_history = []
+        print('Environment initialized')
 
     def _take_action(self, action):
         self.state = get_next_state(self.state, action, self.dt)
@@ -116,7 +114,6 @@ class DoublePendulumEnv(gym.Env):
         coords = np.array(state_to_coords(self.state)[:, 0])
         reward = max(np.linalg.norm(coords - goal), 0.0001)
         reward = 1 / reward
-        done = False
         return reward, done
 
     def _reward_function2(self):
@@ -167,24 +164,31 @@ class DoublePendulumEnv(gym.Env):
         self.action_history.append(action)
         reward, done = self._reward_function()
         return np.array(self.state), reward, done, info
-
-    def animate(self, i, line):
+    
+    def animate(self,i,line,energy_text):
         """perform animation step"""
         XY = state_to_coords(self.state_history[i])
-        line.set_data(XY[0], XY[1])
+        line.set_data(XY[0],XY[1])
+        if self.plotEnergy:
+            en = get_energy(self.state_history[i])
+            energy_text.set_text(f'energy = {en}')
         return line,
-
+    
     def render(self):
         """
         Compute the render frames as specified by render_mode attribute during initialization of the environment.
         """
-        fig = plt.figure()
-        ax = fig.add_subplot(111, aspect='equal', autoscale_on=False, xlim=(-4, 4), ylim=(-2, 2))
+        fig = plt.figure(figsize=(10, 3), dpi=200)
+        ax = fig.add_subplot(111, aspect='equal', autoscale_on=False,xlim=(-8, 8), ylim=(-3, 3))
         ax.grid()
-        line, = ax.plot([], [], 'o-', lw=2)
-        animation_func = lambda i: self.animate(i, line)
-
-        ani = animation.FuncAnimation(fig, animation_func, frames=len(self.state_history), interval=20, blit=True)
+        line, = ax.plot([], [], 'o-', lw=1)
+        
+        energy_text = None
+        if self.plotEnergy:
+            energy_text = ax.text(0.02, 0.90, '', transform=ax.transAxes)    
+        animation_func = lambda i: self.animate(i,line,energy_text)
+        
+        ani = animation.FuncAnimation(fig, animation_func, frames=len(self.state_history),interval=20, blit=True)
         return ani
 
     def reset(self):
@@ -194,9 +198,6 @@ class DoublePendulumEnv(gym.Env):
 
         self.state = self.init_state
         self.action_history = []
-
-        self.state[1] = np.pi / 2 + np.random.uniform(-self.max_initial_angle, self.max_initial_angle)
-        self.state[2] = np.pi / 2 + np.random.uniform(-self.max_initial_angle, self.max_initial_angle)
 
         self.state_history = [self.init_state]
         done = False
